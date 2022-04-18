@@ -1,0 +1,24 @@
+{
+  "name": "urbathrooms-backend",
+  "version": "1.0.0",
+  "description": "A small fun project that helps run the frontend for a bathroom rating site for my university",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./ts-built/index.js"
+  },
+  "keywords": [
+    "api",
+    "backend",
+    "bathrooms",
+    "school",
+    "university"
+  ],
+  "author": "Ian Black",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.24",
+    "cors": "^2.8.5",
+    "express": "^4.17.3"
+  }
+}
