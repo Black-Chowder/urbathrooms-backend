@@ -1,16 +1,27 @@
-const mongoose = require('mongoose');
+import { model, Schema } from 'mongoose';
 
-const Schema = mongoose.Schema;
+interface Info{
+    name: string;
+    description: string;
+    rating: number;
+}
 
-const infoSchema = new Schema({
+const infoSchema = new Schema<Info>({
     name: { type: String, require: true },
     description: { type: String, require: true },
     rating: { type: Number, require: true, default: 0 }
-});
+},
+{ collection: "Info" });
 
-const Info = module.exports = mongoose.model("Info", infoSchema);
+const Info = model<Info>("Info", infoSchema);
 
-module.exports.getInfo = (id: string, callback) => {
-    const query = { id };
-    Info.findOne(query, callback);
+export const getInfo = (id: string) => {
+    return new Promise<Info>(resolve => {
+        Info.findById(id)
+        .then(obj => {
+            resolve(obj);
+        });
+    });
 }
+
+export default Info;

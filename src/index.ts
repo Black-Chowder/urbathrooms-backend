@@ -1,10 +1,9 @@
-import e = require("express");
-
-const express = require('express');
-const cors = require('cors');
-const http = require('http');
-const mongoose = require('mongoose');
-const Info = require('./models/Info');
+import * as express from 'express';
+import { Request, Response } from 'express';
+import * as cors from 'cors';
+import * as http from 'http';
+import { connect } from 'mongoose';
+import { getInfo } from './models/Info';
 
 require('dotenv').config();
 
@@ -16,9 +15,8 @@ app.use(cors({
 app.use(express.json());
 
 //Connect to database
-const mongoOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 const dbURI = process.env.DB_URI;
-mongoose.connect(dbURI, mongoOptions)
+connect(dbURI, { })
 .then(() => {
     console.log("Established connection to database");
 })
@@ -36,16 +34,13 @@ app.on("error", err => {
     console.log(err);
 });
 
-app.get('/info', (req, res) => {
-    console.log(`Requesting info for ${req.query.locId}`);
+app.get('/info', (req:Request, res:Response) => {
+    let locId: string = req.query.locId.toString();
+    console.log(`Requesting info for ${locId}`);
 
-    Info.findById(req.query.locId)
+    getInfo(locId)
     .then(obj => {
-        if (obj){
-            res.status(200).send(obj);
-        }
-        else{
-            res.status(400).send();
-        }
+        if (obj) res.status(200).send(obj);
+        else res.status(400).send();
     });
 });
