@@ -6,6 +6,7 @@ interface Location{
     name: string;
     campus: string;
     _id: Types.ObjectId;
+    previewImage: string;
 }
 
 const locationSchema = new Schema<Location>({
@@ -14,6 +15,7 @@ const locationSchema = new Schema<Location>({
     name: { type: String, require: true },
     campus: { type: String, require: false },
     _id: Schema.Types.ObjectId,
+    previewImage: { type: String, require: false },
 },
 { _id: false, collection: "Locations" });
 
@@ -21,13 +23,7 @@ const LocationModel = model<Location>("Locations", locationSchema);
 
 export const createLocation = (location: Location): Promise<boolean> => {
     return new Promise<boolean>(resolve => {
-        const newLocation = new LocationModel({ 
-            latitude: location.latitude,
-            longitude: location.longitude,
-            name: location.name,
-            campus: location.campus,
-            _id: location._id 
-        });
+        const newLocation = new LocationModel(location);
 
         newLocation.save();
     });

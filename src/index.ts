@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import * as cors from 'cors';
 import * as http from 'http';
 import { connect, Types } from 'mongoose';
-import Info, { getInfo } from './models/Info';
+import Info, { getInfo, newInfo } from './models/Info';
 import { getLocations, createLocation } from './models/Location';
 import { postImage, ImageModel } from './models/Image';
 import * as fs from 'fs';
@@ -52,6 +52,17 @@ app.get('/info', (req:Request, res:Response) => { //TODO: Actual error handling!
     });
 });
 
+app.post('/newInfo', (req:Request, res:Response) => {
+    newInfo(req)
+    .then(obj => {
+        res.status(200).send(obj);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(400).send(err);
+    });
+});
+
 app.get('/locations', (req:Request, res:Response) => {
     let campus: string = req.query.campus.toString();
     console.log(`Requesting locations from campus ${campus}`);
@@ -69,8 +80,9 @@ app.post('/newLocation', (req:Request, res:Response) => {
     let name: string = req.query.name.toString();
     let campus: string = req.query.campus.toString();
     let id: string = req.query.id.toString();
+    let previewImage: string = req.query.previewImage.toString();
 
-    createLocation({ latitude, longitude, name, campus, _id: new Types.ObjectId(id) })
+    createLocation({ latitude, longitude, name, campus, _id: new Types.ObjectId(id), previewImage })
     .then(resp => {
         res.status(200).send();
     });
