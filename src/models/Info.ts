@@ -15,12 +15,15 @@ const infoSchema = new Schema<Info>({
 
 const Info = model<Info>("Info", infoSchema);
 
-export const getInfo = (id: string) => {
+export const getInfo = (id: string): Promise<Info> => {
     return new Promise<Info>(resolve => {
         Info.findById(id)
         .then(obj => {
             resolve(obj);
-        });
+        })
+        .catch(err => {
+            resolve(err);
+        })
     });
 }
 

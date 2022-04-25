@@ -19,7 +19,7 @@ const locationSchema = new Schema<Location>({
 
 const LocationModel = model<Location>("Locations", locationSchema);
 
-export const createLocation = (location: Location) => {
+export const createLocation = (location: Location): Promise<boolean> => {
     return new Promise<boolean>(resolve => {
         const newLocation = new LocationModel({ 
             latitude: location.latitude,
@@ -33,7 +33,7 @@ export const createLocation = (location: Location) => {
     });
 }
 
-export const getLocations = (campus: string) => {
+export const getLocations = (campus: string): Promise<Location[]> => {
     return new Promise<Location[]>(resolve => {
         LocationModel.find({ campus })
         .then(objs => {
