@@ -2,9 +2,8 @@ import * as express from 'express';
 import { Request, Response } from 'express';
 import * as cors from 'cors';
 import * as http from 'http';
-import { connect, Types } from 'mongoose';
-import Info, { getInfo, newInfo } from './models/Info';
-import { getLocations, createLocation } from './models/Location';
+import { connect } from 'mongoose';
+import { getLocations, createLocation, setLocationPreviewImage, addLocationImage, setDescription, clearLocationImages, removeLocationImage } from './models/Location';
 import { postImage, ImageModel } from './models/Image';
 import * as fs from 'fs';
 import * as multer from 'multer';
@@ -42,53 +41,80 @@ app.on("error", err => {
     console.log(err);
 });
 
-app.get('/info', (req:Request, res:Response) => { //TODO: Actual error handling!
-    let locId: string = req.query.locId.toString();
-
-    getInfo(locId)
-    .then(obj => {
-        if (obj) res.status(200).send(obj);
-        else res.status(400).send();
-    });
-});
-
-app.post('/newInfo', (req:Request, res:Response) => {
-    newInfo(req)
-    .then(obj => {
-        res.status(200).send(obj);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(400).send(err);
-    });
-});
-
-app.get('/locations', (req:Request, res:Response) => {
+app.get('/locations', (req:Request, res:Response): void => {
     let campus: string = req.query.campus.toString();
     console.log(`Requesting locations from campus ${campus}`);
 
     getLocations(campus)
     .then(obj => {
         res.status(200).send(obj);
+    })
+    .catch(err => {
+        res.status(400).send(err);
     });
 });
 
-app.post('/newLocation', (req:Request, res:Response) => {
-    //TODO: Add type checks and error handling
-    let latitude: number = +req.query.latitude.toString();
-    let longitude: number = +req.query.longitude.toString();
-    let name: string = req.query.name.toString();
-    let campus: string = req.query.campus.toString();
-    let id: string = req.query.id.toString();
-    let previewImage: string = req.query.previewImage.toString();
+app.patch('/setDescription', (req:Request, res:Response): void => {
+    setDescription(req)
+    .then(id => {
+        res.status(200).send(id);
+    })
+    .catch(err => {
+        res.status(400).send(err);
+    })
+})
 
-    createLocation({ latitude, longitude, name, campus, _id: new Types.ObjectId(id), previewImage })
-    .then(resp => {
-        res.status(200).send();
+app.post('/newLocation', (req:Request, res:Response): void => {
+    createLocation(req)
+    .then(id => {
+        res.status(200).send(id);
+    })
+    .catch(err => {
+        res.status(400).send(err);
     });
 });
 
-app.post('/uploadImage', pictureUpload, (req:Request, res:Response) => {
+app.patch('/setLocationPreviewImage', (req:Request, res:Response): void => {
+    setLocationPreviewImage(req)
+    .then(id => {
+        res.status(200).send(id);
+    })
+    .catch(err => {
+        res.status(400).send(err);
+    });
+});
+
+app.patch('/addLocationImage', (req:Request, res:Response): void => {
+    addLocationImage(req)
+    .then(id => {
+        res.status(200).send(id);
+    })
+    .catch(err => {
+        res.status(400).send(err);
+    });
+});
+
+app.patch('/clearLocationImages', (req:Request, res:Response): void => {
+    clearLocationImages(req)
+    .then(id => {
+        res.status(200).send(id);
+    })
+    .catch(err => {
+        res.status(400).send(err);
+    });
+});
+
+app.patch('/removeLocationImage', (req:Request, res:Response): void => {
+    removeLocationImage(req)
+    .then(id => {
+        res.status(200).send(id);
+    })
+    .catch(err => {
+        res.status(400).send(err);
+    });
+});
+
+app.post('/uploadImage', pictureUpload, (req:Request, res:Response): void => {
     //TODO: Add checks and error handling
     let encode_image = fs.readFileSync(req.file.path).toString('base64');
     let data = Buffer.from(encode_image, 'base64');
@@ -105,7 +131,7 @@ app.post('/uploadImage', pictureUpload, (req:Request, res:Response) => {
     });
 });
 
-app.get('/getImage/:id', (req: Request, res: Response) => {
+app.get('/getImage/:id', (req: Request, res: Response): void => {
     //TODO: Add checks and error handling
     let fileid = req.params.id.toString();
 
@@ -116,5 +142,5 @@ app.get('/getImage/:id', (req: Request, res: Response) => {
     })
     .catch(err => {
         res.status(400).send(err);
-    })
+    });
 });
