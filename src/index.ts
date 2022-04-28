@@ -7,6 +7,7 @@ import { getLocations, createLocation, setLocationPreviewImage, addLocationImage
 import { postImage, ImageModel } from './models/Image';
 import * as fs from 'fs';
 import * as multer from 'multer';
+import { disconnect } from 'mongoose';
 
 require('dotenv').config();
 
@@ -28,6 +29,15 @@ connect(dbURI, { })
     console.log(err);
 });
 
+//Disconnect from database on close
+process.on('SIGINT', () => {
+    disconnect()
+    .then(() => {
+        console.log("Disconnected from database");
+        process.exit(0);
+    });
+});
+
 //Setup Multer
 const upload = multer({ dest: 'uploads/'});
 const pictureUpload = multer({ dest: 'uploads/' }).single(`picture`);
@@ -43,7 +53,6 @@ app.on("error", err => {
 
 app.get('/locations', (req:Request, res:Response): void => {
     let campus: string = req.query.campus.toString();
-    console.log(`Requesting locations from campus ${campus}`);
 
     getLocations(campus)
     .then(obj => {
