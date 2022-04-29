@@ -140,7 +140,7 @@ app.post('/uploadImage', pictureUpload, (req:Request, res:Response): void => {
     });
 });
 
-app.get('/getImage/:id', (req: Request, res: Response): void => {
+app.get('/images/:id', (req: Request, res: Response): void => {
     //TODO: Add checks and error handling
     let fileid = req.params.id.toString();
 
@@ -148,6 +148,19 @@ app.get('/getImage/:id', (req: Request, res: Response): void => {
     .then(file => {
         res.contentType('image/png');
         res.send(file.img.data);
+    })
+    .catch(err => {
+        res.status(400).send(err);
+    });
+});
+
+app.delete('/delImage/:id', (req:Request, res:Response): void => {
+    let id = req.params.id.toString();
+
+    ImageModel.findByIdAndDelete(id)
+    .then(() => {
+        console.log(`Image ${id} deleted`);
+        res.status(200).send();
     })
     .catch(err => {
         res.status(400).send(err);
