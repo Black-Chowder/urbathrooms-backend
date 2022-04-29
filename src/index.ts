@@ -64,6 +64,11 @@ app.get('/locations', (req:Request, res:Response): void => {
 });
 
 app.patch('/setDescription', (req:Request, res:Response): void => {
+    if (!req.query.key || req.query.key.toString() !== process.env.EDIT_KEY) {
+        res.status(400).send("Err: invalid credentials");
+        return;
+    }
+
     setDescription(req)
     .then(id => {
         res.status(200).send(id);
@@ -74,6 +79,11 @@ app.patch('/setDescription', (req:Request, res:Response): void => {
 })
 
 app.post('/newLocation', (req:Request, res:Response): void => {
+    if (!req.query.key || req.query.key.toString() !== process.env.EDIT_KEY) {
+        res.status(400).send("Err: invalid credentials");
+        return;
+    }
+
     createLocation(req)
     .then(id => {
         res.status(200).send(id);
@@ -84,6 +94,11 @@ app.post('/newLocation', (req:Request, res:Response): void => {
 });
 
 app.patch('/setLocationPreviewImage', (req:Request, res:Response): void => {
+    if (!req.query.key || req.query.key.toString() !== process.env.EDIT_KEY) {
+        res.status(400).send("Err: invalid credentials");
+        return;
+    }
+
     setLocationPreviewImage(req)
     .then(id => {
         res.status(200).send(id);
@@ -94,6 +109,11 @@ app.patch('/setLocationPreviewImage', (req:Request, res:Response): void => {
 });
 
 app.patch('/addLocationImage', (req:Request, res:Response): void => {
+    if (!req.query.key || req.query.key.toString() !== process.env.EDIT_KEY) {
+        res.status(400).send("Err: invalid credentials");
+        return;
+    }
+    
     addLocationImage(req)
     .then(id => {
         res.status(200).send(id);
@@ -104,6 +124,11 @@ app.patch('/addLocationImage', (req:Request, res:Response): void => {
 });
 
 app.patch('/clearLocationImages', (req:Request, res:Response): void => {
+    if (!req.query.key || req.query.key.toString() !== process.env.EDIT_KEY) {
+        res.status(400).send("Err: invalid credentials");
+        return;
+    }
+    
     clearLocationImages(req)
     .then(id => {
         res.status(200).send(id);
@@ -114,6 +139,11 @@ app.patch('/clearLocationImages', (req:Request, res:Response): void => {
 });
 
 app.patch('/removeLocationImage', (req:Request, res:Response): void => {
+    if (!req.query.key || req.query.key.toString() !== process.env.EDIT_KEY) {
+        res.status(400).send("Err: invalid credentials");
+        return;
+    }
+    
     removeLocationImage(req)
     .then(id => {
         res.status(200).send(id);
@@ -124,6 +154,11 @@ app.patch('/removeLocationImage', (req:Request, res:Response): void => {
 });
 
 app.post('/uploadImage', pictureUpload, (req:Request, res:Response): void => {
+    if (!req.query.key || req.query.key.toString() !== process.env.EDIT_KEY) {
+        res.status(400).send("Err: invalid credentials");
+        return;
+    }
+    
     //TODO: Add checks and error handling
     let encode_image = fs.readFileSync(req.file.path).toString('base64');
     let data = Buffer.from(encode_image, 'base64');
@@ -155,6 +190,11 @@ app.get('/images/:id', (req: Request, res: Response): void => {
 });
 
 app.delete('/delImage/:id', (req:Request, res:Response): void => {
+    if (!req.query.key || req.query.key.toString() !== process.env.EDIT_KEY) {
+        res.status(400).send("Err: invalid credentials");
+        return;
+    }
+    
     let id = req.params.id.toString();
 
     ImageModel.findByIdAndDelete(id)
