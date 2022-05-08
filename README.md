@@ -3,13 +3,13 @@ A REST API designed as a backend for [URBathrooms.com](https://urbathrooms.herok
 
 ## Environment Variables
 ### DB_URI
-//TODO: Description
+The URI to access the MongoDB database.
 
 ### EDIT_KEY
-//TODO: Description
+Certain API requests use this as a password to confirm only select users can use certain features.
 
 ### ORIGIN
-//TODO: Description
+CORS origin.  Should be URL of frontend, or \* if made a public API.
 
 ## API Requests
 
@@ -46,66 +46,78 @@ Queries:
 * `longitude: number`
 * `name: string`
 * `campus: string`
+* `key: string` Edit key to authenticate request access
 
-Returns the id of the created image
+Returns the id of the created location
 
-Example call: `http://localhost:5000/newLocation?latitude=43.1300278&longitude=-77.6267076&name=Susan%20B.%20Anthony&campus=river`
+Example call: `http://localhost:5000/newLocation?latitude=43.1300278&longitude=-77.6267076&name=Susan%20B.%20Anthony&campus=river&key=12345`
 
 ### POST `/uploadImage`
-//TODO: Add Description
+Queries:
+* `key: string` Edit key to authenticate request access
+Also requests multipart 'picture' in PNG format
+
+Returns the id of the uploaded image
 
 ### PATCH `/setDescription`
 Queries:
 * `id: string` the id of the location for which this description applies
 * `description: string`
+* `key: string` Edit key to authenticate request access
 
 Returns the id of the location for which this description applies
 
-Example call: `http://localhost:5000/setDescription?id=626864bcda48ea4faac85045&description=Description%20goes%20here`
+Example call: `http://localhost:5000/setDescription?id=626864bcda48ea4faac85045&description=Description%20goes%20here&key=12345`
 
 ### PATCH `/setPreviewImage`
 Queries:
 * `id: string` the id of the location for which this image applies
 * `previewImage: string` the id of the image.  Note that the image must already be in the database and this id refers to its id in the database
+* `key: string` Edit key to authenticate request access
 
 Returns the id of the location for which this image applies
 
-Example call: `http://localhost:5000/setLocationPreviewImage?id=626864bcda48ea4faac85045&previewImage=6265eff6202cb7ff6d008d58`
+Example call: `http://localhost:5000/setLocationPreviewImage?id=62784ebc57ce50f12da7eddd&previewImage=62784ef457ce50f12da7eddf&key=12345`
 
 ### PATCH `/addLocationImage`
 Queries:
 * `id: string` the id of the location for which this image applies
 * `imageId: string` the id of the image.  Note that the image must already be in the database and this id refers to its id in the database
+* `key: string` Edit key to authenticate request access
 
 Returns the id of the location for which this image applies
 
-Example call: `http://localhost:5000/addLocationImage?id=626c001284f38641986b4ce1&imageId=626b2db49e1aa116b81977da`
+Example call: `http://localhost:5000/addLocationImage?id=62784ebc57ce50f12da7eddd&imageId=62784ef457ce50f12da7eddf&key=12345`
 
 ### PATCH `/clearLocationImages`
 Queries:
 * `id: string` the id of the location for which images are to be cleared
+* `key: string` Edit key to authenticate request access
 
 Clears the location's array of image ids.  Note that it does not remove the images from the database.
 
 Returns the id of this location
 
-Example call: `http://localhost:5000/clearLocationImages?id=626864bcda48ea4faac85045`
+Example call: `http://localhost:5000/clearLocationImages?id=626864bcda48ea4faac85045&key=12345`
 
 ### PATCH `/removeLocationImage`
 Queries:
 * `id: string` the id of the location for which an image is to be deleted
 * `imageIndex: number` the index in the location's image array to be deleted
+* `key: string` Edit key to authenticate request access
 
 Removes a location's image from its image array.  Note that it does not remove the image from the database.
 
 Returns the id of this location
 
-Example call: `http://localhost:5000/removeLocationImage?id=626864bcda48ea4faac85045&imageIndex=0`
+Example call: `http://localhost:5000/removeLocationImage?id=6277eb5857ce50f12da7ed7d&imageIndex=0&key=12345`
 
 ### DELETE `delImage/:id`
+Queries:
+* `key: string` the edit key to confirm the person attempting to delete the image has permission to do so.
 
 Deletes an image from the database
 
 Only returns status of call
 
-Example call: `http://localhost:5000/delImage/6265eff6202cb7ff6d008d58`
+Example call: `http://localhost:5000/delImage/6265eff6202cb7ff6d008d58?key=12345`
